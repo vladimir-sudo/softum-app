@@ -26,6 +26,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {UserDeleteModalComponent} from "../components/modals/user-delete-modal/user-delete-modal.component";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -35,37 +36,38 @@ import {MatSortModule} from "@angular/material/sort";
     EditUserComponent,
     UserDeleteModalComponent
   ],
-  imports: [
-    BrowserModule,
-    RouterModule.forRoot([
-      {
-        path: 'users',
-        children: [
-          {path: '', component: UsersListComponent},
-          {path: 'add', component: CreateUserComponent},
-          {path: ':id', component: EditUserComponent}
-        ]
-      },
-    ]),
-    MatTableModule,
-    MatCardModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    FormsModule,
-    MatSelectModule,
-    MatToolbarModule,
-    HttpClientModule,
-    MatDialogModule,
-    MatPaginatorModule,
-    MatSortModule,
-  ],
+    imports: [
+        BrowserModule,
+        RouterModule.forRoot([
+            {
+                path: 'users',
+                children: [
+                    {path: '', component: UsersListComponent},
+                    {path: 'add', component: CreateUserComponent},
+                    {path: ':id', component: EditUserComponent}
+                ]
+            },
+        ]),
+        MatTableModule,
+        MatCardModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRadioModule,
+        ReactiveFormsModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        FormsModule,
+        MatSelectModule,
+        MatToolbarModule,
+        HttpClientModule,
+        MatDialogModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTooltipModule,
+    ],
   providers: [
     MatDatepickerModule,
     ApiService,

@@ -32,3 +32,38 @@ table {
 .search-form .form-row p {
   margin-left: 15px;
 }
+
+.table-spinner {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  margin: auto;
+}
+
+.table-spinner > div {
+  background-color: #3f51b5;
+  width: 25%;
+  height: 100%;
+  margin-top: 0;
+  margin-left: -25%;
+  animation: bounce_loadingProgress 1.5s infinite ease-in-out both;
+}
+
+@keyframes bounce_loadingProgress {
+  0% {
+    margin-left: -25%;
+  }
+  50% {
+    margin-left: 100%;
+  }
+}
+
+@-webkit-keyframes bounce_loadingProgress {
+  0% {
+    margin-left: -25%;
+  }
+  50% {
+    margin-left: 100%;
+  }
+}
+

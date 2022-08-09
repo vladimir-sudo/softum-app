@@ -8,8 +8,6 @@ import {StateType} from "../../../types/state";
 import {CityType} from "../../../types/city";
 import {FormControl, FormGroup} from "@angular/forms";
 import {User} from "../../../models/user.model";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'user-index',
@@ -32,7 +30,8 @@ export class UsersListComponent implements OnInit {
     'actions'
   ];
 
-  users = [];
+  users: [] = [];
+  usersLoading: boolean = false;
 
   countries: (CountryType)[] = [];
   isCountriesLoad: boolean = false;
@@ -45,13 +44,26 @@ export class UsersListComponent implements OnInit {
 
   searchForm: FormGroup;
 
-  pageSize = 5;
-  pageNum = 0;
-  search = '';
+  usersLength: number = 0;
+  pageSize: number = 5;
+  pageNum: number = 0;
+  search: string = '';
+
   sort = {
     column: null,
     type: null
   };
+
+  genders = [
+    {
+      key: 'male',
+      value: 'Male'
+    },
+    {
+      key: 'female',
+      value: 'Female'
+    }
+  ]
 
   constructor(
     private apiService: ApiService,
@@ -93,6 +105,8 @@ export class UsersListComponent implements OnInit {
   }
 
   getUsers(): void {
+    this.usersLoading = true;
+
     const user = new User(
       this.searchForm.value.firstName,
       this.searchForm.value.lastName,
@@ -106,9 +120,11 @@ export class UsersListComponent implements OnInit {
       this.searchForm.value.city
     );
 
-    this.apiService.getUsers(user)
+    this.apiService.getUsers(user, this.pageNum * this.pageSize, this.pageSize)
       .subscribe((data: any) => {
         this.users = data.users;
+        this.usersLength = data.length;
+        this.usersLoading = false;
       })
   }
 
@@ -175,10 +191,52 @@ export class UsersListComponent implements OnInit {
   paginateTable(event: any) {
     this.pageSize = event?.pageSize ?? this.pageSize;
     this.pageNum = event?.pageIndex ?? this.pageNum;
+
+    this.getUsers();
   }
 
   usersTable() {
-    let usersTable = this.users?.map((u: any) => {
+    let users = this.decorateUsers(this.users);
+
+    if (!!this.search) {
+      users = this.searchUsers(users);
+    }
+    if (this.sort.column !== null) {
+      users = this.sortUsers(users)
+    }
+    return users;
+  }
+
+  private sortUsers(users: any) {
+    const column: any = this.sort.column;
+    const type: any = this.sort.type;
+
+    return users.sort((a: any, b: any) => {
+      if (a[column] < b[column]) {
+        return type === 'asc' ? -1 : 1;
+      }
+      if (a[column] > b[column]) {
+        return type === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+
+  private searchUsers(users: any): [] {
+    return users?.filter((u: any) => {
+      let valid = false;
+
+      for (let column of this.displayedColumns) {
+        if (!valid && !!u[column]) {
+          valid = !!(u[column].indexOf(this.search) + 1);
+        }
+      }
+      return valid;
+    })
+  }
+
+  private decorateUsers(users: any): [] {
+    return users?.map((u: any) => {
       const user = u;
 
       user.countryName = user.country.name;
@@ -187,41 +245,11 @@ export class UsersListComponent implements OnInit {
 
       return user;
     });
+  }
 
-    if (!!this.search) {
-      usersTable = usersTable?.filter((u: any) => {
-        let valid = false;
-
-        for (let column of this.displayedColumns) {
-          if (!valid && !!u[column]) {
-            valid = !!(u[column].indexOf(this.search) + 1);
-          }
-        }
-        return valid;
-      })
+  showErrorTooltip(condition: boolean, message: string): void {
+    if (condition) {
+      this._snackBar.open(message, 'Ok');
     }
-    let users = [];
-
-    for (let i = 0; i < usersTable.length; i += this.pageSize) {
-      users.push(usersTable.slice(i, i + this.pageSize))
-    }
-
-    users = users[this.pageNum];
-
-    if (this.sort.column !== null) {
-      const column = this.sort.column;
-      const type = this.sort.type;
-
-      users = users.sort((a: any, b: any) => {
-        if (a[column] < b[column]) {
-          return type === 'asc' ? -1 : 1;
-        }
-        if (a[column] > b[column]) {
-          return type === 'asc' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return users;
   }
 }
