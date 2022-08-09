@@ -1,0 +1,184 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span>Users</span>
+  <span class="example-spacer"></span>
+</mat-toolbar>
+
+<div class="page">
+  <form class="search-form mb-30px" [formGroup]="searchForm" (ngSubmit)="getUsers()">
+    <div class="form-row">
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>Birthday</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="birthDay">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>Email ID</mat-label>
+          <input matInput formControlName="email">
+        </mat-form-field>
+      </p>
+      <p class="d-flex">
+        <mat-label>Gender:</mat-label>
+        <mat-radio-group formControlName="gender">
+          <mat-radio-button value="male" class="ml-10px">Male</mat-radio-button>
+          <mat-radio-button value="female" class="ml-30px">Female</mat-radio-button>
+        </mat-radio-group>
+      </p>
+    </div>
+    <div class="form-row">
+      <p>
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>Country</mat-label>
+          <mat-select (selectionChange)="loadStates()" formControlName="country">
+            <mat-option *ngFor="let country of countries" [value]="country._id">
+              {{country.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>State</mat-label>
+          <mat-select (selectionChange)="loadCities()" formControlName="state">
+            <mat-option *ngFor="let state of states" [value]="state._id">
+              {{state.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>City</mat-label>
+          <mat-select formControlName="city">
+            <mat-option *ngFor="let city of cities" [value]="city._id">
+              {{city.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="legacy">
+          <mat-label>Pincode</mat-label>
+          <input matInput formControlName="pinCode">
+        </mat-form-field>
+      </p>
+    </div>
+    <div class="btn-group">
+      <button mat-button color="primary" type="submit">Submit</button>
+      <button mat-button (click)="resetForm()">Reset</button>
+    </div>
+  </form>
+
+  <div class="mb-30px">
+    <a routerLink="/users/add" mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      Add User
+    </a>
+  </div>
+
+  <mat-form-field appearance="legacy">
+    <mat-label>Search</mat-label>
+    <input matInput [(ngModel)]="search">
+  </mat-form-field>
+
+  <table mat-table [dataSource]="usersTable()" class="mat-elevation-z4" matSort (matSortChange)="sortTable($event)">
+    <ng-container matColumnDef="_id">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> ID</th>
+      <td mat-cell *matCellDef="let user"> {{user._id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> First Name</th>
+      <td mat-cell *matCellDef="let user"> {{user.firstName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Last Name</th>
+      <td mat-cell *matCellDef="let user"> {{user.lastName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="birthday">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Date Of Birth</th>
+      <td mat-cell *matCellDef="let user"> {{user.birthDay}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Email id</th>
+      <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="gender">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Gender</th>
+      <td mat-cell *matCellDef="let user"> {{user.gender}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="countryName">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Country</th>
+      <td mat-cell *matCellDef="let user"> {{user.country.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="stateName">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> State</th>
+      <td mat-cell *matCellDef="let user"> {{user.state.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cityName">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> City</th>
+      <td mat-cell *matCellDef="let user"> {{user.city.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Address</th>
+      <td mat-cell *matCellDef="let user"> {{user.address}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="pinCode">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef> Pincode</th>
+      <td mat-cell *matCellDef="let user"> {{user.pinCode}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions</th>
+      <td mat-cell *matCellDef="let user">
+        <button mat-mini-fab color="primary" class="mr-10px" [routerLink]="user._id">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-mini-fab color="warn" (click)="deleteUser(user._id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 [length]="users.length"
+                 [pageIndex]="0"
+                 [pageSize]="5"
+                 (page)="paginateTable($event)">
+  </mat-paginator>
+</div>

@@ -1,0 +1,107 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" routerLink="/users">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <span>Users</span>
+  <span class="example-spacer"></span>
+</mat-toolbar>
+
+<div class="page">
+  <div class="d-flex w-50">
+    <form [formGroup]="createUserForm" (ngSubmit)="createUser()" class="w-100">
+      <mat-card class="w-100">
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>First name</mat-label>
+            <input matInput placeholder="Enter your First name" formControlName="firstName">
+            <mat-error>First name required</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Last name</mat-label>
+            <input matInput placeholder="Enter your last name" formControlName="lastName">
+            <mat-error>Last name required</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="pat@example.com" formControlName="email">
+            <mat-error>Email required</mat-error>
+          </mat-form-field>
+        </p>
+        <div>
+        <p class="d-flex">
+          <mat-label>Gender:</mat-label>
+          <mat-radio-group formControlName="gender">
+            <mat-radio-button value="male" class="ml-10px">Male</mat-radio-button>
+            <mat-radio-button value="female" class="ml-30px">Female</mat-radio-button>
+          </mat-radio-group>
+        </p>
+        </div>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Birthday</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="birthDay">
+            <mat-error>Birthday required</mat-error>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Country</mat-label>
+            <mat-select (selectionChange)="loadStates()" formControlName="country">
+              <mat-option *ngFor="let country of countries" [value]="country._id">
+                {{country.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error>Country required</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>State</mat-label>
+            <mat-select (selectionChange)="loadCities()" formControlName="state">
+              <mat-option *ngFor="let state of states" [value]="state._id">
+                {{state.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ !createUserForm.value?.country ? 'Please select country' : 'State required' }}</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>City</mat-label>
+            <mat-select formControlName="city">
+              <mat-option *ngFor="let city of cities" [value]="city._id">
+                {{city.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ !createUserForm.value?.state ? 'Please select country' : 'City required' }}</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Address</mat-label>
+            <input matInput placeholder="Enter your address" formControlName="address">
+            <mat-error>Address required</mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Pin Code</mat-label>
+            <input matInput placeholder="Enter your pin code" formControlName="pinCode">
+            <mat-error>Pin Code required</mat-error>
+          </mat-form-field>
+        </p>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!createUserForm.valid">Create</button>
+      </mat-card>
+    </form>
+
+  </div>
+</div>
+
+
